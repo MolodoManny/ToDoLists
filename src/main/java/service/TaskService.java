@@ -9,5 +9,8 @@ public interface TaskService {
     Task getTaskById(Long id);
     Task createTask(Task task);
     Task updateTask(Long id, Task task);
-    void deleteTask(Long id);   // попробовать через Task 
+    void deleteTask(Long id);   // попробовать через Task
+    List<Task> filterTaskByStatus(Task.TaskStatus status);
+    List<Task> sortTaskByDate();
+    List<Task> sortTaskByStatus();
 }
