@@ -1,10 +1,10 @@
-package controller;
+package todo.controller;
 
 
 import lombok.RequiredArgsConstructor;
-import model.Task;
+import todo.model.Task;
 import org.springframework.stereotype.Component;
-import service.TaskService;
+import todo.service.TaskService;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -13,16 +13,17 @@ import java.util.List;
 import java.util.Scanner;
 
 @Component
-@RequiredArgsConstructor
+
 public class TaskController {
     private final TaskService taskService;
-    private final Scanner scanner = new Scanner(System.in);
-    private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    private final Scanner scanner;
+    private final DateTimeFormatter dateTimeFormatter;
 
     public TaskController(TaskService taskService) {
         this.taskService = taskService;
+        this.scanner = new Scanner(System.in);
+        this.dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     }
-
 
     public void start() {
         System.out.println("Welcome to TODO list");
@@ -69,8 +70,8 @@ public class TaskController {
         LocalDate localDate = readDate("Enter the date (yyyy-MM-dd");
         Task task = new Task();
         task.setTitle(title);
-        task.setDescriptions(description);
-        task.setLocalDate(localDate);
+        task.setDescription(description);
+        task.setDueDate(localDate);
     }
 
     private void deleteTask() {
@@ -93,19 +94,19 @@ public class TaskController {
         System.out.println("Enter new description");
         String description = scanner.nextLine();
         if (description.isEmpty()) {
-            description = editingTask.getDescriptions();
+            description = editingTask.getDescription();
         }
         System.out.println("Enter new date in format (yyyy-MM-dd)");
         String dateInput = scanner.nextLine();
-        LocalDate localDate = dateInput.isEmpty() ? editingTask.getLocalDate() : parseDate(dateInput);
+        LocalDate localDate = dateInput.isEmpty() ? editingTask.getDueDate() : parseDate(dateInput);
         System.out.println("Enter new status (TODO,IN_PROGRESS,DONE) press enter to confirm");
         String statusInput = scanner.nextLine();
-        Task.TaskStatus status = statusInput.isEmpty() ? editingTask.getTaskStatus() : parseStatus(statusInput);
+        Task.Status status = statusInput.isEmpty() ? editingTask.getStatus() : parseStatus(statusInput);
         Task updatedTask = new Task();
         updatedTask.setTitle(title);
-        updatedTask.setDescriptions(description);
-        updatedTask.setLocalDate(localDate);
-        updatedTask.setTaskStatus(status);
+        updatedTask.setDescription(description);
+        updatedTask.setDueDate(localDate);
+        updatedTask.setStatus(status);
         taskService.updateTask(id, updatedTask);
         System.out.println("Task was update");
 
@@ -122,9 +123,9 @@ public class TaskController {
 
     private void filterTask() {
         System.out.println("Enter status to filter tasks (TODO,IN_PROGRESS,DONE)");
-        Task.TaskStatus status = parseStatus(scanner.nextLine());
+        Task.Status status = parseStatus(scanner.nextLine());
 
-        List<Task> tasks = taskService.filterTaskByStatus(status);
+        List<Task> tasks = taskService.filterTasksByStatus(status);
         if (tasks.isEmpty()) {
             System.out.println("Tasks not found to filter" + status);
         } else {
@@ -141,8 +142,8 @@ public class TaskController {
         List<Task> tasks;
 
         switch (options) {
-            case "1" -> tasks = taskService.sortTaskByDate();
-            case "2" -> tasks = taskService.sortTaskByStatus();
+            case "1" -> tasks = taskService.sortTasksByDueDate();
+            case "2" -> tasks = taskService.sortTasksByStatus();
             default -> {
                 System.out.println("Invalid options");
                 return;
@@ -157,16 +158,16 @@ public class TaskController {
             System.out.printf("ID: | Date: | Status: ",
                     task.getId(),
                     task.getTitle(),
-                    task.getDescriptions(),
-                    task.getLocalDate(),
-                    task.getTaskStatus());
+                    task.getDescription(),
+                    task.getDueDate(),
+                    task.getStatus());
         }
         System.out.println();
     }
 
-    private Task.TaskStatus parseStatus(String statusString) {
+    private Task.Status parseStatus(String statusString) {
         try {
-            return Task.TaskStatus.valueOf(statusString.toUpperCase());
+            return Task.Status.valueOf(statusString.toUpperCase());
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("Invalid status, please enter the correct (TODO,IN_PROGRESS,DONE");
         }

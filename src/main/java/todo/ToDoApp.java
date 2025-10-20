@@ -1,11 +1,11 @@
 package todo;
 
-import controller.TaskController;
+import todo.controller.TaskController;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = {"todo", "controller", "service", "repository", "model"})
 public class ToDoApp  implements CommandLineRunner {
     private final TaskController taskController;
 

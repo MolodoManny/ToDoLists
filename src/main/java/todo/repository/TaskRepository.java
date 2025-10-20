@@ -1,6 +1,8 @@
-package repository;
+package todo.repository;
 
-import model.Task;
+
+
+import todo.model.Task;
 
 import java.util.List;
 import java.util.Optional;
@@ -11,5 +13,6 @@ public interface TaskRepository {
     Task save(Task task);
     void deletedById(Long id);
     boolean existById(Long id);
-    List<Task> findByStatus(Task.TaskStatus status);
+    List<Task> findByStatus(Task.Status status);
+
 }
