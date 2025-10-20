@@ -19,7 +19,9 @@ public class TaskController {
     private final Scanner scanner = new Scanner(System.in);
     private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-
+    public TaskController(TaskService taskService) {
+        this.taskService = taskService;
+    }
 
 
     public void start() {
