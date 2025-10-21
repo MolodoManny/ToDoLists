@@ -13,19 +13,25 @@ import java.util.List;
 import java.util.Scanner;
 
 @Component
-
+@RequiredArgsConstructor
 public class TaskController {
     private final TaskService taskService;
-    private final Scanner scanner;
-    private final DateTimeFormatter dateTimeFormatter;
+    private final Scanner scanner = new Scanner(System.in);
+    private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-    public TaskController(TaskService taskService) {
-        this.taskService = taskService;
-        this.scanner = new Scanner(System.in);
-        this.dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-    }
+//  public TaskController(TaskService taskService) {
+//   this.taskService = taskService;
+//       this.scanner = new Scanner(System.in);
+//        this.dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+// }
 
     public void start() {
+
+        if (taskService == null){
+            System.out.println("Error task service is null");
+            return;
+        }
+
         System.out.println("Welcome to TODO list");
         while (true) {
             printMenuTask();
